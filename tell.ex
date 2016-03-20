@@ -1,64 +1,91 @@
-defmodule TellStory
-#*Location[ID, Name, Parent]
-#[1, Player's Office, nil]
-#[2, Evil Lair's Bathroom, 6]
-#[3, Evil Lair's Command Center, 6]
-#[4, Evil Lair's Barracks, 6]
-#[5, Evil Lair's Hangar, 6]
-#[6, Outside the Evil Lair, nil]
-#
-#*Character[ID, Name, Stats, Is Boss]
-#[1, Henchman]
-#[2, Villain]
-#
-#*Character Drops[Character ID, Item ID, Chance, State, Once]
-#[2, 1, 100, 2, true]
-#[2, 2, 100, nil, true]
-#[1, 3, 100, 4, true]
-#
-#*Items[ID, Name]
-#[1, Armor]
-#[2, PDA]
-#[3, Key]
-#
-#*States[ID, Name]
-#[1, Mission Accepted]
-#[2, Armor Acquired]
-#[3, PDA Acquired]
-#[4, Key Acquired]
-#[5, Missile Disarmed]
-#
-#*Transitions[ID, State To, State From]
-#[1, 1, nil]
-#[2, 2, 1]
-#[3, 3, 1]
-#[4, 3, 2]
-#[5, 4, 1]
-#[6, 4, 2]
-#[7, 4, 3]
-#[8, 5, 3]
-#[8, 5, 4]
-#
-#*Location Conditions[ID, State, Location, Conjunction Group]
-#[1, 1, 1, 1]
-#[2, 2, 2, 2]
-#[3, 3, 2, 3]
-#[4, 3, 3, 4]
-#[5, 4, 4, 5]
-#[6, 5, 5, 6]
-#[7, 3, 3, 7]
-#[8, 4, 4, 8]
-#
-#*Defeat Conditions[ID, State, Character, Conjunction Subgroup]
-#[1, 2, 2, 2]
-#[2, 3, 2, 3]
-#[3, 4, 1, 5]
-#[4, 5, 1, 6]
-#
-#*Inventory Conditions[ID, State, Object, Conjunction Subgroup]
-#[1, 4, 1, 8]
-#[2, 5, 2, 6]
-#[3, 5, 3, 6]
+defmodule Character do
+  defstruct id: 0, name: "Person", boss: false, power: 0
+end
+
+defmodule Location do
+  defstruct id: 0, name: "Place", parent: 0
+end
+
+defmodule Item do
+  defstruct id: 0, name: "Thing"
+end
+
+defmodule Drop do
+  defstruct character: 0, item: 0, chance: 0, state: 0, once: false
+end
+
+defmodule State do
+  defstruct id: 0, name: "State"
+end
+
+defmodule Transition do
+  defstruct id: 0, state_to: 0, state_from: 0
+end
+
+defmodule CondLocation do
+  defstruct id: 0, state: 0, location: 0, conj_group: 0
+end
+
+defmodule CondDefeat do
+  defstruct id: 0, state: 0, character: 0, conj_group: 0
+end
+
+defmodule CondInventory do
+  defstruct id: 0, state: 0, item: 0, conj_group: 0
+end
+
+defmodule TellStory do
+  %Location{id: 1, name: "Player's Office", parent: 0}
+  %Location{id: 2, name: "Evil Lair's Bathroom", parent: 6}
+  %Location{id: 3, name: "Evil Lair's Command Center", parent: 6}
+  %Location{id: 4, name: "Evil Lair's Barracks", parent: 6}
+  %Location{id: 5, name: "Evil Lair's Hangar", parent: 6}
+  %Location{id: 6, name: "Outside the Evil Lair", parent: 0}
+
+  %Character{id: 1, name: "Henchman"}
+  %Character{id: 2, name: "Villain"}
+
+  %Drop{character: 2, item: 1, chance: 100, state: 2, once: true}
+  %Drop{character: 2, item: 2, chance: 100, state: 0, once: true}
+  %Drop{character: 1, item: 3, chance: 100, state: 4, once: true}
+
+  %Item{id: 1, name: "Armor"}
+  %Item{id: 2, name: "PDA"}
+  %Item{id: 3, name: "Key"}
+
+  %State{id: 1, name: "Mission Accepted"}
+  %State{id: 2, name: "Armor Acquired"}
+  %State{id: 3, name: "PDA Acquired"}
+  %State{id: 4, name: "Key Acquired"}
+  %State{id: 5, name: "Missile Disarmed"}
+
+  %Transition{id: 1, state_to: 1, state_from: 0}
+  %Transition{id: 2, state_to: 2, state_from: 1}
+  %Transition{id: 3, state_to: 3, state_from: 1}
+  %Transition{id: 4, state_to: 3, state_from: 2}
+  %Transition{id: 5, state_to: 4, state_from: 1}
+  %Transition{id: 6, state_to: 4, state_from: 2}
+  %Transition{id: 7, state_to: 4, state_from: 3}
+  %Transition{id: 8, state_to: 5, state_from: 3}
+  %Transition{id: 8, state_to: 5, state_from: 4}
+
+  %CondLocation{id: 1, state: 1, location: 1, conj_group: 1}
+  %CondLocation{id: 2, state: 2, location: 2, conj_group: 2}
+  %CondLocation{id: 3, state: 3, location: 2, conj_group: 3}
+  %CondLocation{id: 4, state: 3, location: 3, conj_group: 4}
+  %CondLocation{id: 5, state: 4, location: 4, conj_group: 5}
+  %CondLocation{id: 6, state: 5, location: 5, conj_group: 6}
+  %CondLocation{id: 7, state: 3, location: 3, conj_group: 7}
+  %CondLocation{id: 8, state: 4, location: 4, conj_group: 8}
+
+  %CondDefeat{id: 1, state: 2, character: 2, conj_group: 2}
+  %CondDefeat{id: 2, state: 3, character: 2, conj_group: 3}
+  %CondDefeat{id: 3, state: 4, character: 1, conj_group: 5}
+  %CondDefeat{id: 4, state: 5, character: 1, conj_group: 6}
+
+  %CondInventory{id: 1, state: 4, item: 1, conj_group: 8}
+  %CondInventory{id: 2, state: 5, item: 2, conj_group: 6}
+  %CondInventory{id: 3, state: 5, item: 3, conj_group: 6}
 
 end
 
