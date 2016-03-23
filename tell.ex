@@ -101,7 +101,7 @@ defmodule TellStory do
   end
 
   def play() do
-    data = init()
+    [locations, characters, items, drops, states, transitions, cnLocations, cnDrops, cnInventory] = init()
   end
 end
 
