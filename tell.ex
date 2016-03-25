@@ -99,6 +99,12 @@ defmodule TellStory do
     
     [l, c, i, d, s, t, cl, cd, ci]
   end
+  
+  defp byIndex(list, id) do
+    ret = nil
+    Enum.each(list, fn x -> if x.id == id do ret = x end end)
+    ret
+  end
 
   def play() do
     loc = 1
