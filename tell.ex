@@ -112,11 +112,37 @@ defmodule TellStory do
         byIndex(tail, id)
     end
   end
+  
+  defp findNeighborLocations([], id) do
+    []
+  end
+  
+  defp findNeighborLocations([head|tail], id) do
+    cond do
+      head.parent == id ->
+        [head|findNeighborLocations(tail, id)]
+      true ->
+        findNeighborLocations(tail, id)
+    end
+  end
+  
+  def where(locations, id) do
+    loc = byIndex(locations, id)
+    unless loc == nil do
+      IO.puts "You are in:  " <> loc.name
+    end
+    nlocs = findNeighborLocations(locations, id)
+    unless length(nlocs) == 0 do
+      IO.puts "You can travel to:"
+      Enum.each nlocs, &IO.puts(&1.name)
+    end
+  end
 
   def play() do
     loc = 1
     inv = []
     [locations, characters, items, drops, states, transitions, cnLocations, cnDrops, cnInventory] = init()
+    where(locations, loc)
   end
 end
 
