@@ -100,20 +100,19 @@ defmodule TellStory do
     [l, c, i, d, s, t, cl, cd, ci]
   end
   
-  defp byIndex([], id) do
+  defp byIndex([], _) do
     nil
   end
   
   defp byIndex([head|tail], id) do
-    cond do
-      head.id == id ->
-        head
-      true ->
-        byIndex(tail, id)
+    if head.id == id do
+      head
+    else
+      byIndex(tail, id)
     end
   end
   
-  defp findNeighborLocations([], id) do
+  defp findNeighborLocations([], _) do
     []
   end
   
@@ -126,25 +125,35 @@ defmodule TellStory do
     end
   end
   
-  def where(locations, id) do
+  defp enumerateItems([], _) do
+  end
+  
+  defp enumerateItems([head|tail], counter) do
+    IO.puts "  (" <> Integer.to_string(counter) <> ")  " <> head.name 
+    enumerateItems(tail, counter + 1)
+  end
+  
+  defp where(locations, id) do
+    out = %Location{id: 0, name: "Out", parent: -1}
     loc = byIndex(locations, id)
     unless loc == nil do
       IO.puts "You are in:  " <> loc.name
     end
     nlocs = findNeighborLocations(locations, id)
-    unless length(nlocs) == 0 do
-      IO.puts "You can travel to:"
-      Enum.each nlocs, &IO.puts(&1.name)
+    unless id == 0 do
+      nlocs = [out|nlocs]
     end
+    IO.puts "You can travel to:"
+    enumerateItems(nlocs, 1)
   end
 
-  def play() do
-    loc = 1
+  def play(startLoc) do
+    loc = startLoc
     inv = []
     [locations, characters, items, drops, states, transitions, cnLocations, cnDrops, cnInventory] = init()
     where(locations, loc)
   end
 end
 
-TellStory.play()
+TellStory.play(1)
 
