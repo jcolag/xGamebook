@@ -34,6 +34,10 @@ defmodule CondInventory do
   defstruct id: 0, state: 0, item: 0, conj_group: 0
 end
 
+defmodule Travel do
+  defstruct id: 0, location: 0
+end
+
 defmodule TellStory do
   defp init() do
     l1 = %Location{id: 1, name: "Player's Office", parent: 0}
@@ -126,25 +130,30 @@ defmodule TellStory do
   end
   
   defp enumerateItems([], _) do
+    []
   end
   
   defp enumerateItems([head|tail], counter) do
-    IO.puts "  (" <> Integer.to_string(counter) <> ")  " <> head.name 
-    enumerateItems(tail, counter + 1)
+    IO.puts "  (" <> Integer.to_string(counter) <> ")  " <> head.name
+    travel = %Travel{id: counter, location: head.id}
+    [travel|enumerateItems(tail, counter + 1)]
   end
   
   defp where(locations, id) do
-    out = %Location{id: 0, name: "Out", parent: -1}
     loc = byIndex(locations, id)
     unless loc == nil do
       IO.puts "You are in:  " <> loc.name
     end
     nlocs = findNeighborLocations(locations, id)
     unless id == 0 do
+      out = %Location{id: loc.parent, name: "Out", parent: -1}
       nlocs = [out|nlocs]
     end
     IO.puts "You can travel to:"
-    enumerateItems(nlocs, 1)
+    map = enumerateItems(nlocs, 1)
+    resp = IO.gets "Where to? "
+    {idx, extra} = Integer.parse(resp)
+    where(locations, byIndex(map, idx).location)
   end
 
   def play(startLoc) do
