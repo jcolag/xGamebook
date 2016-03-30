@@ -1,3 +1,7 @@
+defmodule Player do
+  defstruct location: 0, state: 0
+end
+
 defmodule Character do
   defstruct id: 0, name: "Person", boss: false, power: 0
 end
@@ -139,13 +143,14 @@ defmodule TellStory do
     [travel|enumerateItems(tail, counter + 1)]
   end
   
-  defp where(locations, id) do
-    loc = byIndex(locations, id)
+  defp where(locations, player) do
+    locId = player.location
+    loc = byIndex(locations, locId)
     unless loc == nil do
       IO.puts "You are in:  " <> loc.name
     end
-    nlocs = findNeighborLocations(locations, id)
-    unless id == 0 do
+    nlocs = findNeighborLocations(locations, locId)
+    unless locId == 0 do
       out = %Location{id: loc.parent, name: "Out", parent: -1}
       nlocs = [out|nlocs]
     end
@@ -153,16 +158,17 @@ defmodule TellStory do
     map = enumerateItems(nlocs, 1)
     resp = IO.gets "Where to? "
     {idx, extra} = Integer.parse(resp)
-    where(locations, byIndex(map, idx).location)
+    player = %Player{location: byIndex(map, idx).location, state: player.state}
+    where(locations, player)
   end
 
-  def play(startLoc) do
-    loc = startLoc
+  def play(startLoc, startState) do
+    player = %Player{location: startLoc, state: startState}
     inv = []
     [locations, characters, items, drops, states, transitions, cnLocations, cnDrops, cnInventory] = init()
-    where(locations, loc)
+    where(locations, player)
   end
 end
 
-TellStory.play(1)
+TellStory.play(1, 0)
 
