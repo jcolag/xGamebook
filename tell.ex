@@ -1,5 +1,5 @@
 defmodule Player do
-  defstruct location: 0, state: 0
+  defstruct location: 0, state: 0, inventory: []
 end
 
 defmodule Character do
@@ -157,14 +157,13 @@ defmodule TellStory do
     IO.puts "You can travel to:"
     map = enumerateItems(nlocs, 1)
     resp = IO.gets "Where to? "
-    {idx, extra} = Integer.parse(resp)
+    {idx, _} = Integer.parse(resp)
     player = %Player{location: byIndex(map, idx).location, state: player.state}
     where(locations, player)
   end
 
   def play(startLoc, startState) do
-    player = %Player{location: startLoc, state: startState}
-    inv = []
+    player = %Player{location: startLoc, state: startState, inventory: []}
     [locations, characters, items, drops, states, transitions, cnLocations, cnDrops, cnInventory] = init()
     where(locations, player)
   end
