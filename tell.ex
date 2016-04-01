@@ -2,6 +2,10 @@ defmodule Player do
   defstruct location: 0, state: 0, inventory: []
 end
 
+defmodule Db do
+  defstruct locations: [], characters: [], items: [], drops: [], states: [], transitions: [], cnLocations: [], cnDrops: [], cnInventory: []
+end
+
 defmodule Character do
   defstruct id: 0, name: "Person", boss: false, power: 0
 end
@@ -104,8 +108,8 @@ defmodule TellStory do
     ci2 = %CondInventory{id: 2, state: 5, item: 2, conj_group: 6}
     ci3 = %CondInventory{id: 3, state: 5, item: 3, conj_group: 6}
     ci = [ci1, ci2, ci3]
-    
-    [l, c, i, d, s, t, cl, cd, ci]
+
+    %Db{locations: l, characters: c, items: i, drops: d, states: s, transitions: t, cnLocations: cl, cnDrops: cd, cnInventory: ci}
   end
   
   defp byIndex([], _) do
@@ -143,13 +147,13 @@ defmodule TellStory do
     [travel|enumerateItems(tail, counter + 1)]
   end
   
-  defp where(locations, player) do
+  defp where(database, player) do
     locId = player.location
-    loc = byIndex(locations, locId)
+    loc = byIndex(database.locations, locId)
     unless loc == nil do
       IO.puts "You are in:  " <> loc.name
     end
-    nlocs = findNeighborLocations(locations, locId)
+    nlocs = findNeighborLocations(database.locations, locId)
     unless locId == 0 do
       out = %Location{id: loc.parent, name: "Out", parent: -1}
       nlocs = [out|nlocs]
@@ -159,13 +163,13 @@ defmodule TellStory do
     resp = IO.gets "Where to? "
     {idx, _} = Integer.parse(resp)
     player = %Player{location: byIndex(map, idx).location, state: player.state}
-    where(locations, player)
+    where(database, player)
   end
 
   def play(startLoc, startState) do
     player = %Player{location: startLoc, state: startState, inventory: []}
-    [locations, characters, items, drops, states, transitions, cnLocations, cnDrops, cnInventory] = init()
-    where(locations, player)
+    database = init()
+    where(database, player)
   end
 end
 
