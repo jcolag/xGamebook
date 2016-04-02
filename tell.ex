@@ -57,7 +57,7 @@ defmodule TellStory do
     l = [l1, l2, l3, l4, l5, l6]
 
     c1 = %Character{id: 1, name: "Henchman"}
-    c2 = %Character{id: 2, name: "Villain"}
+    c2 = %Character{id: 2, name: "Villain", boss: true}
     c = [c1, c2]
 
     i1 = %Item{id: 1, name: "Armor"}
