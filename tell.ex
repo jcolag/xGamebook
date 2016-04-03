@@ -7,7 +7,7 @@ defmodule Db do
 end
 
 defmodule Character do
-  defstruct id: 0, name: "Person", boss: false, power: 0
+  defstruct id: 0, name: "Person", boss: false, power: 0, location: 0
 end
 
 defmodule Location do
