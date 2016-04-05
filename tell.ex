@@ -56,8 +56,8 @@ defmodule TellStory do
     l6 = %Location{id: 6, name: "Outside the Evil Lair", parent: 0}
     l = [l1, l2, l3, l4, l5, l6]
 
-    c1 = %Character{id: 1, name: "Henchman", location: 3, boss: true}
-    c2 = %Character{id: 2, name: "Villain", location: 1, boss: true}
+    c1 = %Character{id: 1, name: "Henchman", location: 4, boss: true}
+    c2 = %Character{id: 2, name: "Villain", location: 3, boss: true}
     c = [c1, c2]
 
     i1 = %Item{id: 1, name: "Armor"}
@@ -137,6 +137,19 @@ defmodule TellStory do
     end
   end
   
+  defp charactersInLocation([], _) do
+    []
+  end
+  
+  defp charactersInLocation([head|tail], locId) do
+    cond do
+      head.location == locId ->
+        [head|charactersInLocation(tail, locId)]
+      true ->
+        charactersInLocation(tail, locId)
+    end
+  end
+  
   defp enumerateItems([], _) do
     []
   end
@@ -158,6 +171,8 @@ defmodule TellStory do
       out = %Location{id: loc.parent, name: "Out", parent: -1}
       nlocs = [out|nlocs]
     end
+    IO.puts "In here are:"
+    enumerateItems(charactersInLocation(database.characters, locId), 1)
     IO.puts "You can travel to:"
     map = enumerateItems(nlocs, 1)
     resp = IO.gets "Where to? "
